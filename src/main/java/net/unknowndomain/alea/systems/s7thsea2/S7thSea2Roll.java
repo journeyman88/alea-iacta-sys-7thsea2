@@ -39,7 +39,8 @@ public class S7thSea2Roll implements GenericRoll
         VERBOSE,
         REROLL_LEFTOVER,
         DOUBLE_INCREMENT,
-        EXPLODING_DICE
+        EXPLODING_DICE,
+        INCREASED_DIFFICULTY
     }
     
     private final DicePool<D10> dicePool;
@@ -149,9 +150,9 @@ public class S7thSea2Roll implements GenericRoll
     private MessageBuilder formatResults(S7thSea2Results results, S7thSea2Results results2)
     {
         MessageBuilder mb = new MessageBuilder();
-        mb.append("Increments: ").append(results.getIncrements()).append(" ");
+        mb.append("Raises: ").append(results.getIncrements()).append(" ");
         mb.append(results.getUsedDice()).appendNewLine();
-        mb.append("Leftovers: ").append(results.getLeftovers().size()).append(" [ ");
+        mb.append("Unused dice: ").append(results.getLeftovers().size()).append(" [ ");
         for (Integer t : results.getLeftovers())
         {
             mb.append(t).append(" ");
@@ -173,9 +174,9 @@ public class S7thSea2Roll implements GenericRoll
             if (mods.contains(Modifiers.VERBOSE))
             {
                 mb.append("Prev : {\n");
-                mb.append("    Increments: ").append(results2.getIncrements()).append(" ");
+                mb.append("    Raises: ").append(results2.getIncrements()).append(" ");
                 mb.append(results2.getUsedDice()).appendNewLine();
-                mb.append("    Leftovers: ").append(results2.getLeftovers().size()).append(" [ ");
+                mb.append("    Unused dice: ").append(results2.getLeftovers().size()).append(" [ ");
                 for (Integer t : results2.getLeftovers())
                 {
                     mb.append(t).append(" ");
@@ -200,7 +201,8 @@ public class S7thSea2Roll implements GenericRoll
             return -1 * o1.compareTo(o2);
         });
         S7thSea2Results results = new S7thSea2Results(res);
-        RecursiveCompound.calcIncrements(results, mods.contains(Modifiers.DOUBLE_INCREMENT), 0);
+        int diffMod = (mods.contains(Modifiers.INCREASED_DIFFICULTY)) ? 5 : 0;
+        RecursiveCompound.calcIncrements(results, mods.contains(Modifiers.DOUBLE_INCREMENT), diffMod);
         return results;
     }
     

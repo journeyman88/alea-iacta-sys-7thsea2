@@ -93,7 +93,7 @@ public class S7thSea2Command extends RpgSystemCommand
         CMD_OPTIONS.addOption(
                 Option.builder("d")
                         .longOpt(DOUBLE_PARAM)
-                        .desc("Force double increment enabled")
+                        .desc("Force 'Double Raise' mode enabled")
                         .build()
         );
         
