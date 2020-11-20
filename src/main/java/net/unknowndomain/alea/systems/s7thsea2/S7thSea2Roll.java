@@ -40,11 +40,13 @@ public class S7thSea2Roll implements GenericRoll
         REROLL_LEFTOVER,
         DOUBLE_INCREMENT,
         EXPLODING_DICE,
-        INCREASED_DIFFICULTY
+        INCREASED_DIFFICULTY,
+        JOIE_DE_VIVRE
     }
     
     private final DicePool<D10> dicePool;
     private final Set<Modifiers> mods;
+    private final int skill;
     
     public S7thSea2Roll(Integer dice, Modifiers ... mod)
     {
@@ -71,6 +73,7 @@ public class S7thSea2Roll implements GenericRoll
         {
             this.dicePool = new DicePool<>(D10.INSTANCE, dice);
         }
+        skill = 0;
     }
     
     public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Collection<Modifiers> mod)
@@ -95,12 +98,22 @@ public class S7thSea2Roll implements GenericRoll
         Integer dice = trait + skill + bonus;
         if (mods.contains(Modifiers.EXPLODING_DICE))
         {
-            this.dicePool = new DicePool<>(D10.INSTANCE, dice, 10);
+            Set<Integer> exploding = new HashSet<>();
+            exploding.add(10);
+            if (mods.contains(Modifiers.JOIE_DE_VIVRE))
+            {
+                for (int i = 1; i <= skill; i++)
+                {
+                    exploding.add(i);
+                }
+            }
+            this.dicePool = new DicePool<>(D10.INSTANCE, dice, exploding);
         }
         else
         {
             this.dicePool = new DicePool<>(D10.INSTANCE, dice);
         }
+        this.skill = skill;
     }
     
     @Override
@@ -111,7 +124,7 @@ public class S7thSea2Roll implements GenericRoll
         res.addAll(resultsPool);
         S7thSea2Results results = buildIncrements(res);
         S7thSea2Results results2 = null;
-        if (!res.isEmpty() && mods.contains(Modifiers.REROLL_LEFTOVER))
+        if ((!results.getLeftovers().isEmpty()) && mods.contains(Modifiers.REROLL_LEFTOVER))
         {
             Integer ret = res.remove(res.size()-1);
             res = new ArrayList<>();
@@ -142,7 +155,6 @@ public class S7thSea2Roll implements GenericRoll
             results = buildIncrements(res);
             results.setNewValue(newRes);
             results.setOldValue(ret);
-            results.getLeftovers().addAll(res);
         }
         return formatResults(results, results2);
     }
@@ -196,6 +208,24 @@ public class S7thSea2Roll implements GenericRoll
     
     private S7thSea2Results buildIncrements(List<Integer> res)
     {
+        
+        if (mods.contains(Modifiers.JOIE_DE_VIVRE))
+        {
+            List<Integer> tmp = new ArrayList<>(res.size());
+            tmp.addAll(res);
+            res.clear();
+            for (Integer r : tmp)
+            {
+                if (r <= skill)
+                {
+                    res.add(10);
+                }
+                else
+                {
+                    res.add(r);
+                }
+            }
+        }
         res.sort((Integer o1, Integer o2) ->
         {
             return -1 * o1.compareTo(o2);

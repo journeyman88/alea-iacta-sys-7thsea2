@@ -45,6 +45,8 @@ public class S7thSea2Command extends RpgSystemCommand
     private static final String REROLL_PARAM = "reroll";
     private static final String DOUBLE_PARAM = "double";
     private static final String EXPLODE_PARAM = "explode";
+    private static final String INCREASE_PARAM = "increase";
+    private static final String JOIE_PARAM = "joie";
     
     private static final Options CMD_OPTIONS;
     
@@ -105,6 +107,20 @@ public class S7thSea2Command extends RpgSystemCommand
         );
         
         CMD_OPTIONS.addOption(
+                Option.builder("i")
+                        .longOpt(INCREASE_PARAM)
+                        .desc("Increase the 'cost' of a Raise by 5")
+                        .build()
+        );
+        
+        CMD_OPTIONS.addOption(
+                Option.builder("j")
+                        .longOpt(JOIE_PARAM)
+                        .desc("[Char mode] Enable the 'Joie de vivre' advantage")
+                        .build()
+        );
+        
+        CMD_OPTIONS.addOption(
                 Option.builder("h")
                         .longOpt( CMD_HELP )
                         .desc( "Print help")
@@ -149,7 +165,7 @@ public class S7thSea2Command extends RpgSystemCommand
                 CommandLine cmd = parser.parse(CMD_OPTIONS, params.split(" "));
                 if (
                         cmd.hasOption(CMD_HELP) || 
-                        (cmd.hasOption(NUMBER_PARAM) && ( cmd.hasOption(TRAIT_PARAM) || cmd.hasOption(SKILL_PARAM) || cmd.hasOption(BONUS_PARAM))) || 
+                        (cmd.hasOption(NUMBER_PARAM) && ( cmd.hasOption(TRAIT_PARAM) || cmd.hasOption(SKILL_PARAM) || cmd.hasOption(BONUS_PARAM) || cmd.hasOption(JOIE_PARAM))) || 
                         (cmd.hasOption(TRAIT_PARAM) ^ cmd.hasOption(SKILL_PARAM)) 
                     )
                 {
@@ -169,6 +185,14 @@ public class S7thSea2Command extends RpgSystemCommand
                 if (cmd.hasOption(EXPLODE_PARAM))
                 {
                     mods.add(S7thSea2Roll.Modifiers.EXPLODING_DICE);
+                }
+                if (cmd.hasOption(INCREASE_PARAM))
+                {
+                    mods.add(S7thSea2Roll.Modifiers.INCREASED_DIFFICULTY);
+                }
+                if (cmd.hasOption(JOIE_PARAM))
+                {
+                    mods.add(S7thSea2Roll.Modifiers.JOIE_DE_VIVRE);
                 }
                 if (cmd.hasOption(CMD_VERBOSE))
                 {
