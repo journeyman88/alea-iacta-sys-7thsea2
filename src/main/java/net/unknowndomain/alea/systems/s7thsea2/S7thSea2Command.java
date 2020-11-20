@@ -29,6 +29,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.javacord.api.entity.message.MessageBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -36,6 +38,7 @@ import org.javacord.api.entity.message.MessageBuilder;
  */
 public class S7thSea2Command extends RpgSystemCommand
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(S7thSea2Command.class);
     private static final RpgSystemDescriptor DESC = new RpgSystemDescriptor("7th Sea 2nd Edition", "7s2", "7th-sea-2nd");
     
     private static final String TRAIT_PARAM = "trait";
@@ -159,6 +162,7 @@ public class S7thSea2Command extends RpgSystemCommand
             {
                 return HelpWrapper.printHelp(prefixMatcher.group(CMD_NAME), CMD_OPTIONS, true);
             }
+            LOGGER.debug(cmdLine);
             try
             {
                 CommandLineParser parser = new DefaultParser();
