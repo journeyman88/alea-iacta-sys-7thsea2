@@ -20,12 +20,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import net.unknowndomain.alea.messages.MsgBuilder;
+import net.unknowndomain.alea.messages.ReturnMsg;
+import net.unknowndomain.alea.roll.GenericResult;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author journeyman
  */
-public class S7thSea2Results
+public class S7thSea2Results extends GenericResult
 {
     private final List<Integer> results;
     private int increments = 0;
@@ -33,6 +37,7 @@ public class S7thSea2Results
     private List<String> usedDice = new ArrayList<>();
     private Integer oldValue;
     private Integer newValue;
+    private S7thSea2Results prev;
     
     public S7thSea2Results(List<Integer> results)
     {
@@ -119,6 +124,50 @@ public class S7thSea2Results
     public void setOldValue(Integer oldValue)
     {
         this.oldValue = oldValue;
+    }
+
+    public S7thSea2Results getPrev()
+    {
+        return prev;
+    }
+
+    public void setPrev(S7thSea2Results prev)
+    {
+        this.prev = prev;
+    }
+    
+    @Override
+    protected void formatResults(MsgBuilder messageBuilder, boolean verbose, int indentValue)
+    {
+        String indent = StringUtils.leftPad("", indentValue);
+        messageBuilder.append(indent).append("Raises: ").append(getIncrements()).append(" ");
+        messageBuilder.append(getUsedDice()).appendNewLine();
+        messageBuilder.append(indent).append("Unused dice: ").append(getLeftovers().size()).append(" [ ");
+        for (Integer t : getLeftovers())
+        {
+            messageBuilder.append(t).append(" ");
+        }
+        messageBuilder.append("]\n");
+        if (verbose)
+        {
+            messageBuilder.append(indent).append("Results: ").append(" [ ");
+            for (Integer t : getResults())
+            {
+                messageBuilder.append(t).append(" ");
+            }
+            messageBuilder.append("]\n");
+        }
+        if (prev != null)
+        {
+            
+            messageBuilder.append("Reroll: true (").append(getOldValue()).append(" => ").append(getNewValue()).append(")").appendNewLine();
+            if (verbose)
+            {
+                messageBuilder.append("Prev : {\n");
+                prev.formatResults(messageBuilder, verbose, indentValue + 4);
+                messageBuilder.append("}\n");
+            }
+        }
     }
 
 }

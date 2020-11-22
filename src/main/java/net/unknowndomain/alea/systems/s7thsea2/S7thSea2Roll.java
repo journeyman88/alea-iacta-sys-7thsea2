@@ -22,10 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import net.unknowndomain.alea.dice.D10;
-import net.unknowndomain.alea.messages.MsgBuilder;
-import net.unknowndomain.alea.messages.ReturnMsg;
+import net.unknowndomain.alea.dice.standard.D10;
 import net.unknowndomain.alea.pools.DicePool;
+import net.unknowndomain.alea.roll.GenericResult;
 import net.unknowndomain.alea.roll.GenericRoll;
 
 /**
@@ -118,7 +117,7 @@ public class S7thSea2Roll implements GenericRoll
     }
     
     @Override
-    public ReturnMsg getResult()
+    public GenericResult getResult()
     {
         List<Integer> resultsPool = this.dicePool.getResults();
         List<Integer> res = new ArrayList<>();
@@ -156,55 +155,10 @@ public class S7thSea2Roll implements GenericRoll
             results = buildIncrements(res);
             results.setNewValue(newRes);
             results.setOldValue(ret);
+            results.setPrev(results2);
         }
-        return formatResults(results, results2);
-    }
-    
-    private ReturnMsg formatResults(S7thSea2Results results, S7thSea2Results results2)
-    {
-        MsgBuilder mb = new MsgBuilder();
-        mb.append("Raises: ").append(results.getIncrements()).append(" ");
-        mb.append(results.getUsedDice()).appendNewLine();
-        mb.append("Unused dice: ").append(results.getLeftovers().size()).append(" [ ");
-        for (Integer t : results.getLeftovers())
-        {
-            mb.append(t).append(" ");
-        }
-        mb.append("]\n");
-        if (mods.contains(Modifiers.VERBOSE))
-        {
-            mb.append("Results: ").append(" [ ");
-            for (Integer t : results.getResults())
-            {
-                mb.append(t).append(" ");
-            }
-            mb.append("]\n");
-        }
-        if (results2 != null)
-        {
-            
-            mb.append("Reroll: true (").append(results.getOldValue()).append(" => ").append(results.getNewValue()).append(")").appendNewLine();
-            if (mods.contains(Modifiers.VERBOSE))
-            {
-                mb.append("Prev : {\n");
-                mb.append("    Raises: ").append(results2.getIncrements()).append(" ");
-                mb.append(results2.getUsedDice()).appendNewLine();
-                mb.append("    Unused dice: ").append(results2.getLeftovers().size()).append(" [ ");
-                for (Integer t : results2.getLeftovers())
-                {
-                    mb.append(t).append(" ");
-                }
-                mb.append("]\n");
-                mb.append("    Results: ").append(" [ ");
-                for (Integer t : results2.getResults())
-                {
-                    mb.append(t).append(" ");
-                }
-                mb.append("]\n");
-                mb.append("}\n");
-            }
-        }
-        return mb.build();
+        results.setVerbose(mods.contains(Modifiers.VERBOSE));
+        return results;
     }
     
     private S7thSea2Results buildIncrements(List<Integer> res)
