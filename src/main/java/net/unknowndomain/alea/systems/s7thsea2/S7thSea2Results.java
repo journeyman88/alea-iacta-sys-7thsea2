@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import net.unknowndomain.alea.messages.MsgBuilder;
-import net.unknowndomain.alea.messages.ReturnMsg;
 import net.unknowndomain.alea.roll.GenericResult;
 import org.apache.commons.lang3.StringUtils;
 
@@ -139,7 +138,7 @@ public class S7thSea2Results extends GenericResult
     @Override
     protected void formatResults(MsgBuilder messageBuilder, boolean verbose, int indentValue)
     {
-        String indent = StringUtils.leftPad("", indentValue);
+        String indent = getIndent(indentValue);
         messageBuilder.append(indent).append("Raises: ").append(getIncrements()).append(" ");
         messageBuilder.append(getUsedDice()).appendNewLine();
         messageBuilder.append(indent).append("Unused dice: ").append(getLeftovers().size()).append(" [ ");
