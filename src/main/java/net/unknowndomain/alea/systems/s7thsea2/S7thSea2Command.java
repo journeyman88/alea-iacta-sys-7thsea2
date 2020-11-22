@@ -17,8 +17,8 @@ package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
 import net.unknowndomain.alea.command.HelpWrapper;
+import net.unknowndomain.alea.messages.ReturnMsg;
 import net.unknowndomain.alea.systems.RpgSystemCommand;
 import net.unknowndomain.alea.systems.RpgSystemDescriptor;
 import net.unknowndomain.alea.roll.GenericRoll;
@@ -28,7 +28,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.javacord.api.entity.message.MessageBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,83 +148,83 @@ public class S7thSea2Command extends RpgSystemCommand
     {
         return DESC;
     }
+
+    @Override
+    protected Logger getLogger()
+    {
+        return LOGGER;
+    }
     
     @Override
-    public MessageBuilder execCommand(String cmdLine)
+    protected ReturnMsg safeCommand(String cmdName, String cmdParams)
     {
-        MessageBuilder retVal = new MessageBuilder();
-        Matcher prefixMatcher = PREFIX.matcher(cmdLine);
-        if (prefixMatcher.matches())
+        ReturnMsg retVal;
+        if (cmdParams == null || cmdParams.isEmpty())
         {
-            String params = prefixMatcher.group(CMD_PARAMS);
-            if (params == null || params.isEmpty())
+            return HelpWrapper.printHelp(cmdName, CMD_OPTIONS, true);
+        }
+        try
+        {
+            CommandLineParser parser = new DefaultParser();
+            CommandLine cmd = parser.parse(CMD_OPTIONS, cmdParams.split(" "));
+            if (
+                    cmd.hasOption(CMD_HELP) || 
+                    (cmd.hasOption(NUMBER_PARAM) && ( cmd.hasOption(TRAIT_PARAM) || cmd.hasOption(SKILL_PARAM) || cmd.hasOption(BONUS_PARAM) || cmd.hasOption(JOIE_PARAM))) || 
+                    (cmd.hasOption(TRAIT_PARAM) ^ cmd.hasOption(SKILL_PARAM)) 
+                )
             {
-                return HelpWrapper.printHelp(prefixMatcher.group(CMD_NAME), CMD_OPTIONS, true);
+                return HelpWrapper.printHelp(cmdName, CMD_OPTIONS, true);
             }
-            LOGGER.debug(cmdLine);
-            try
+
+            Set<S7thSea2Roll.Modifiers> mods = new HashSet<>();
+
+            if (cmd.hasOption(REROLL_PARAM))
             {
-                CommandLineParser parser = new DefaultParser();
-                CommandLine cmd = parser.parse(CMD_OPTIONS, params.split(" "));
-                if (
-                        cmd.hasOption(CMD_HELP) || 
-                        (cmd.hasOption(NUMBER_PARAM) && ( cmd.hasOption(TRAIT_PARAM) || cmd.hasOption(SKILL_PARAM) || cmd.hasOption(BONUS_PARAM) || cmd.hasOption(JOIE_PARAM))) || 
-                        (cmd.hasOption(TRAIT_PARAM) ^ cmd.hasOption(SKILL_PARAM)) 
-                    )
-                {
-                    return HelpWrapper.printHelp(prefixMatcher.group(CMD_NAME), CMD_OPTIONS, true);
-                }
-                
-                Set<S7thSea2Roll.Modifiers> mods = new HashSet<>();
-                
-                if (cmd.hasOption(REROLL_PARAM))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.REROLL_LEFTOVER);
-                }
-                if (cmd.hasOption(DOUBLE_PARAM))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.DOUBLE_INCREMENT);
-                }
-                if (cmd.hasOption(EXPLODE_PARAM))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.EXPLODING_DICE);
-                }
-                if (cmd.hasOption(INCREASE_PARAM))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.INCREASED_DIFFICULTY);
-                }
-                if (cmd.hasOption(JOIE_PARAM))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.JOIE_DE_VIVRE);
-                }
-                if (cmd.hasOption(CMD_VERBOSE))
-                {
-                    mods.add(S7thSea2Roll.Modifiers.VERBOSE);
-                }
-                GenericRoll roll;
-                if (cmd.hasOption(NUMBER_PARAM))
-                {
-                    String d = cmd.getOptionValue(NUMBER_PARAM);
-                    roll = new S7thSea2Roll(Integer.parseInt(d), mods);
-                }
-                else
-                {
-                    String t = cmd.getOptionValue(TRAIT_PARAM);
-                    String s = cmd.getOptionValue(SKILL_PARAM);
-                    String b = cmd.getOptionValue(BONUS_PARAM);
-                    int bonus = 0;
-                    if ((b != null) && (!b.isEmpty()))
-                    {
-                        bonus = Integer.parseInt(b);
-                    }
-                    roll = new S7thSea2Roll(Integer.parseInt(t), Integer.parseInt(s), bonus, mods);
-                }
-                retVal = roll.getResult();
-            } 
-            catch (ParseException | NumberFormatException ex)
-            {
-                retVal = HelpWrapper.printHelp(prefixMatcher.group(CMD_NAME), CMD_OPTIONS, true);
+                mods.add(S7thSea2Roll.Modifiers.REROLL_LEFTOVER);
             }
+            if (cmd.hasOption(DOUBLE_PARAM))
+            {
+                mods.add(S7thSea2Roll.Modifiers.DOUBLE_INCREMENT);
+            }
+            if (cmd.hasOption(EXPLODE_PARAM))
+            {
+                mods.add(S7thSea2Roll.Modifiers.EXPLODING_DICE);
+            }
+            if (cmd.hasOption(INCREASE_PARAM))
+            {
+                mods.add(S7thSea2Roll.Modifiers.INCREASED_DIFFICULTY);
+            }
+            if (cmd.hasOption(JOIE_PARAM))
+            {
+                mods.add(S7thSea2Roll.Modifiers.JOIE_DE_VIVRE);
+            }
+            if (cmd.hasOption(CMD_VERBOSE))
+            {
+                mods.add(S7thSea2Roll.Modifiers.VERBOSE);
+            }
+            GenericRoll roll;
+            if (cmd.hasOption(NUMBER_PARAM))
+            {
+                String d = cmd.getOptionValue(NUMBER_PARAM);
+                roll = new S7thSea2Roll(Integer.parseInt(d), mods);
+            }
+            else
+            {
+                String t = cmd.getOptionValue(TRAIT_PARAM);
+                String s = cmd.getOptionValue(SKILL_PARAM);
+                String b = cmd.getOptionValue(BONUS_PARAM);
+                int bonus = 0;
+                if ((b != null) && (!b.isEmpty()))
+                {
+                    bonus = Integer.parseInt(b);
+                }
+                roll = new S7thSea2Roll(Integer.parseInt(t), Integer.parseInt(s), bonus, mods);
+            }
+            retVal = roll.getResult();
+        } 
+        catch (ParseException | NumberFormatException ex)
+        {
+            retVal = HelpWrapper.printHelp(cmdName, CMD_OPTIONS, true);
         }
         return retVal;
     }
