@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import net.unknowndomain.alea.messages.MsgBuilder;
 import net.unknowndomain.alea.roll.GenericResult;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -149,6 +148,7 @@ public class S7thSea2Results extends GenericResult
         messageBuilder.append("]\n");
         if (verbose)
         {
+            messageBuilder.append(indent).append("Roll ID: ").append(getUuid()).appendNewLine();
             messageBuilder.append(indent).append("Results: ").append(" [ ");
             for (Integer t : getResults())
             {
