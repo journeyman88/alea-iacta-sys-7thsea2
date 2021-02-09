@@ -27,7 +27,10 @@ import picocli.CommandLine.Command;
 @Command(
         description = "7th Sea 2nd Edition",
         resourceBundle = "net.unknowndomain.alea.systems.s7thsea2.RpgSystemBundle",
-        sortOptions = false
+        sortOptions = false,
+        customSynopsis = {
+            
+        }
 )
 public class S7thSea2Params extends RpgSystemParams {
     
