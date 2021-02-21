@@ -34,7 +34,7 @@ public class S7thSea2Results extends GenericResult
     private List<Integer> leftovers = new ArrayList<>();
     private List<String> usedDice = new ArrayList<>();
     private Integer oldValue;
-    private Integer newValue;
+    private List<Integer> newValue;
     private S7thSea2Results prev;
     
     public S7thSea2Results(List<Integer> results)
@@ -104,12 +104,12 @@ public class S7thSea2Results extends GenericResult
         return results;
     }
 
-    public Integer getNewValue()
+    public List<Integer> getNewValue()
     {
         return newValue;
     }
 
-    public void setNewValue(Integer newValue)
+    public void setNewValue(List<Integer> newValue)
     {
         this.newValue = newValue;
     }
@@ -159,7 +159,9 @@ public class S7thSea2Results extends GenericResult
         if (prev != null)
         {
             
-            messageBuilder.append("Reroll: true (").append(getOldValue()).append(" => ").append(getNewValue()).append(")").appendNewLine();
+            messageBuilder.append("Reroll: true (").append(getOldValue()).append(" => ");
+            messageBuilder.append(getNewValue());
+            messageBuilder.append(")").appendNewLine();
             if (verbose)
             {
                 messageBuilder.append("Prev : {\n");
