@@ -16,6 +16,11 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+    <scm>
+        <connection>scm:git:git://github.com/journeyman88/alea-iacta-sys-7thsea2</connection>
+        <developerConnection>scm:git:ssh://git@github.com/journeyman88/alea-iacta-sys-7thsea2</developerConnection>
+        <url>https://github.com/journeyman88/alea-iacta-sys-7thsea2</url>
+    </scm>
     
     <dependencies>
         <dependency>
