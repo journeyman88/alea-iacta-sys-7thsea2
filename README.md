@@ -22,8 +22,7 @@ Passing these parameters, the associated modifier will be enabled:
 * `-j` : Only work in Character Mode, enables the 'Joie de Vivre' advantage.
 
 ## Help print
-
-``
+```
 7th Sea 2nd Edition [ 7th-sea-2nd | 7s2 ]
 
 Usage: 7s2 [-dhirvx] -n <diceNumber>
@@ -47,4 +46,4 @@ Options:
   -i, --increase            Increase the 'cost' of a Raise by 5
   -h, --help                Print the command help
   -v, --verbose             Enable verbose output
-``vv
+```
