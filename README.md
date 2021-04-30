@@ -23,7 +23,8 @@ Passing these parameters, the associated modifier will be enabled:
 
 ## Help print
 
-`7th Sea 2nd Edition [ 7th-sea-2nd | 7s2 ]
+``
+7th Sea 2nd Edition [ 7th-sea-2nd | 7s2 ]
 
 Usage: 7s2 [-dhirvx] -n <diceNumber>
    or: 7s2 [-dhirvx] -t <traitRank> -s <skillRank> [-b <bonusDice>] [-j]
@@ -45,4 +46,5 @@ Options:
   -x, --explode             Force dice exposion enabled
   -i, --increase            Increase the 'cost' of a Raise by 5
   -h, --help                Print the command help
-  -v, --verbose             Enable verbose output`
+  -v, --verbose             Enable verbose output
+``vv
