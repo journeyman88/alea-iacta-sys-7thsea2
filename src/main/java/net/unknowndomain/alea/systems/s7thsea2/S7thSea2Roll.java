@@ -37,18 +37,19 @@ public class S7thSea2Roll implements GenericRoll
     private final DicePool<D10> dicePool;
     private final Set<S7thSea2Modifiers> mods;
     private final int skill;
+    private final int addValue;
     
-    public S7thSea2Roll(Integer dice, S7thSea2Modifiers ... mod)
+    public S7thSea2Roll(Integer dice, Integer add, S7thSea2Modifiers ... mod)
     {
-        this(dice, Arrays.asList(mod));
+        this(dice, add, Arrays.asList(mod));
     }
     
-    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, S7thSea2Modifiers ... mod)
+    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, S7thSea2Modifiers ... mod)
     {
-        this(trait, skill, bonus, Arrays.asList(mod));
+        this(trait, skill, bonus, add, Arrays.asList(mod));
     }
     
-    public S7thSea2Roll(Integer dice, Collection<S7thSea2Modifiers> mod)
+    public S7thSea2Roll(Integer dice, Integer add, Collection<S7thSea2Modifiers> mod)
     {
         this.mods = new HashSet<>();
         if (mod != null)
@@ -64,9 +65,10 @@ public class S7thSea2Roll implements GenericRoll
             this.dicePool = new DicePool<>(D10.INSTANCE, dice);
         }
         skill = 0;
+        this.addValue = (add == null) ? (0) : (add);
     }
     
-    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Collection<S7thSea2Modifiers> mod)
+    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, Collection<S7thSea2Modifiers> mod)
     {
         this.mods = new HashSet<>();
         if (mod != null)
@@ -108,6 +110,7 @@ public class S7thSea2Roll implements GenericRoll
             this.dicePool = new DicePool<>(D10.INSTANCE, dice);
         }
         this.skill = skill;
+        this.addValue = (add == null) ? (0) : (add);
     }
     
     @Override
@@ -173,6 +176,16 @@ public class S7thSea2Roll implements GenericRoll
                 {
                     res.add(r);
                 }
+            }
+        }
+        if (addValue > 0)
+        {
+            List<Integer> tmp = new ArrayList<>(res.size());
+            tmp.addAll(res);
+            res.clear();
+            for (Integer r : tmp)
+            {
+                res.add(r + addValue);
             }
         }
         res.sort((Integer o1, Integer o2) ->

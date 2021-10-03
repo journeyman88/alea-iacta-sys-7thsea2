@@ -38,6 +38,8 @@ public class S7thSea2Options extends RpgSystemOptions
     private boolean explode;
     @RpgSystemOption(name = "increase", shortcode = "i", description = "7thsea.options.increase")
     private boolean increase;
+    @RpgSystemOption(name = "add", shortcode = "a", description = "7thsea.options.addValue", argName = "value")
+    private Integer addValue;
     
     @Override
     public boolean isValid()
@@ -128,6 +130,16 @@ public class S7thSea2Options extends RpgSystemOptions
             mods.add(S7thSea2Modifiers.INCREASED_DIFFICULTY);
         }
         return mods;
+    }
+
+    public Integer getAddValue()
+    {
+        return addValue;
+    }
+
+    public void setAddValue(Integer addValue)
+    {
+        this.addValue = addValue;
     }
     
 }
