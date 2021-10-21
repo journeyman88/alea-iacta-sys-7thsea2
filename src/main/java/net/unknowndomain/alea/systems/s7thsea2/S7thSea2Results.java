@@ -163,7 +163,18 @@ public class S7thSea2Results extends GenericResult
         {
             
             messageBuilder.append("Reroll: true (").append(getOldValue().getValue()).append(" => ");
-            messageBuilder.append(getNewValue());
+            if (getNewValue().size() > 1)
+            {
+                messageBuilder.append("[ ");
+            }
+            for (SingleResult<Integer> t : getNewValue())
+            {
+                messageBuilder.append(t.getValue()).append(" ");
+            }
+            if (getNewValue().size() > 1)
+            {
+                messageBuilder.append("] ");
+            }
             messageBuilder.append(")").appendNewLine();
             if (verbose)
             {
