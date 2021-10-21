@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import net.unknowndomain.alea.messages.MsgBuilder;
 import net.unknowndomain.alea.random.SingleResult;
@@ -32,8 +33,8 @@ public class S7thSea2Results extends GenericResult
 {
     private final List<SingleResult<Integer>> results;
     private int increments = 0;
-    private List<SingleResult<Integer>> leftovers = new ArrayList<>();
-    private List<String> usedDice = new ArrayList<>();
+    private List<SingleResult<Integer>> leftovers = new LinkedList<>();
+    private List<String> usedDice = new LinkedList<>();
     private SingleResult<Integer> oldValue;
     private List<SingleResult<Integer>> newValue;
     private S7thSea2Results prev;
@@ -69,7 +70,7 @@ public class S7thSea2Results extends GenericResult
             {
                 sb.append("+");
             }
-            sb.append(d);
+            sb.append(d.getValue());
         }
         sb.append(")");
         usedDice.add(sb.toString());
@@ -144,7 +145,7 @@ public class S7thSea2Results extends GenericResult
         messageBuilder.append(indent).append("Unused dice: ").append(getLeftovers().size()).append(" [ ");
         for (SingleResult<Integer> t : getLeftovers())
         {
-            messageBuilder.append(t).append(" ");
+            messageBuilder.append(t.getValue()).append(" ");
         }
         messageBuilder.append("]\n");
         if (verbose)
@@ -153,14 +154,15 @@ public class S7thSea2Results extends GenericResult
             messageBuilder.append(indent).append("Results: ").append(" [ ");
             for (SingleResult<Integer> t : getResults())
             {
-                messageBuilder.append(t).append(" ");
+                messageBuilder.append("( ").append(t.getLabel()).append(" => ");
+                messageBuilder.append(t.getValue()).append(") ");
             }
             messageBuilder.append("]\n");
         }
         if (prev != null)
         {
             
-            messageBuilder.append("Reroll: true (").append(getOldValue()).append(" => ");
+            messageBuilder.append("Reroll: true (").append(getOldValue().getValue()).append(" => ");
             messageBuilder.append(getNewValue());
             messageBuilder.append(")").appendNewLine();
             if (verbose)

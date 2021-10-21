@@ -16,6 +16,7 @@
 package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import net.unknowndomain.alea.random.SingleResult;
 
@@ -81,7 +82,8 @@ public class RecursiveCompound
     
     public static void calcIncrements(S7thSea2Results results, boolean doubleIncrements, int diffMod)
     {
-        List<SingleResult<Integer>> list = results.getResults();
+        List<SingleResult<Integer>> list = new LinkedList<>();
+        list.addAll(results.getResults());
         List<Group> tmp;
         if (doubleIncrements)
         {

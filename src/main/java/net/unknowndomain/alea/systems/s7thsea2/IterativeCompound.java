@@ -16,6 +16,7 @@
 package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import net.unknowndomain.alea.random.SingleResult;
 
@@ -29,7 +30,7 @@ public class IterativeCompound
     public static void calcIncrements(S7thSea2Results results, boolean doubleIncrements, int diffMod)
     {
         int round = 0;
-        List<SingleResult<Integer>> res = new ArrayList<>();
+        List<SingleResult<Integer>> res = new LinkedList<>();
         res.addAll(results.getResults());
         while(round < res.size())
         {
