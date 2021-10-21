@@ -17,6 +17,7 @@ package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.unknowndomain.alea.random.SingleResult;
 
 /**
  *
@@ -28,7 +29,7 @@ public class IterativeCompound
     public static void calcIncrements(S7thSea2Results results, boolean doubleIncrements, int diffMod)
     {
         int round = 0;
-        List<Integer> res = new ArrayList<>();
+        List<SingleResult<Integer>> res = new ArrayList<>();
         res.addAll(results.getResults());
         while(round < res.size())
         {
@@ -38,13 +39,13 @@ public class IterativeCompound
         results.getLeftovers().addAll(res);
     }
         
-    private static void combo(S7thSea2Results results, List<Integer> numbers, int diffMod, int round, boolean doubleIncrements)
+    private static void combo(S7thSea2Results results, List<SingleResult<Integer>> numbers, int diffMod, int round, boolean doubleIncrements)
     {
         int checkLevel;
-        List<Integer> toAdd;
+        List<SingleResult<Integer>> toAdd;
         if (doubleIncrements)
         {
-            List<Integer> doublePool = new ArrayList<>();
+            List<SingleResult<Integer>> doublePool = new ArrayList<>();
             doublePool.addAll(numbers);
             checkLevel = 15 + diffMod;
             while(!doublePool.isEmpty())
@@ -55,8 +56,8 @@ public class IterativeCompound
                 {
                     for(int g = 0; g < round; g++)
                     {
-                        Integer tmpVal = doublePool.remove(0);
-                        totSum += tmpVal;
+                        SingleResult<Integer> tmpVal = doublePool.remove(0);
+                        totSum += tmpVal.getValue();
                         toAdd.add(tmpVal);
                     }
                 }
@@ -68,7 +69,7 @@ public class IterativeCompound
                 {
                     for (int ti = doublePool.size() -1; ti >= 0; ti--)
                     {
-                        if ((totSum + doublePool.get(ti)) >= checkLevel)
+                        if ((totSum + doublePool.get(ti).getValue()) >= checkLevel)
                         {
                             for(int g = 0; g < round; g++)
                             {
@@ -84,14 +85,14 @@ public class IterativeCompound
             }
         }
         checkLevel = 10 + diffMod;
-        List<Integer> singlePool = new ArrayList<>();
+        List<SingleResult<Integer>> singlePool = new ArrayList<>();
         singlePool.addAll(numbers);
         while(!singlePool.isEmpty())
         {
             if (round == 1)
             {
-                Integer ret = singlePool.get(0);
-                if (ret >= checkLevel)
+                SingleResult<Integer> ret = singlePool.get(0);
+                if (ret.getValue() >= checkLevel)
                 {
                     singlePool.remove(0);
                     numbers.remove(0);
@@ -105,13 +106,13 @@ public class IterativeCompound
             {
                 for(int g = 0; g < round; g++)
                 {
-                    Integer tmpVal = singlePool.remove(0);
-                    totSum += tmpVal;
+                    SingleResult<Integer> tmpVal = singlePool.remove(0);
+                    totSum += tmpVal.getValue();
                     toAdd.add(tmpVal);
                 }
                 for (int ti = singlePool.size() -1; ti >= 0; ti--)
                 {
-                    if ((totSum + singlePool.get(ti)) >= checkLevel)
+                    if ((totSum + singlePool.get(ti).getValue()) >= checkLevel)
                     {
                         for(int g = 0; g < round; g++)
                         {

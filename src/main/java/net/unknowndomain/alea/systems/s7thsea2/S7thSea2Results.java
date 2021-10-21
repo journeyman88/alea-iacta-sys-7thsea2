@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import net.unknowndomain.alea.messages.MsgBuilder;
+import net.unknowndomain.alea.random.SingleResult;
 import net.unknowndomain.alea.roll.GenericResult;
 
 /**
@@ -29,40 +30,40 @@ import net.unknowndomain.alea.roll.GenericResult;
  */
 public class S7thSea2Results extends GenericResult
 {
-    private final List<Integer> results;
+    private final List<SingleResult<Integer>> results;
     private int increments = 0;
-    private List<Integer> leftovers = new ArrayList<>();
+    private List<SingleResult<Integer>> leftovers = new ArrayList<>();
     private List<String> usedDice = new ArrayList<>();
-    private Integer oldValue;
-    private List<Integer> newValue;
+    private SingleResult<Integer> oldValue;
+    private List<SingleResult<Integer>> newValue;
     private S7thSea2Results prev;
     
-    public S7thSea2Results(List<Integer> results)
+    public S7thSea2Results(List<SingleResult<Integer>> results)
     {
-        List<Integer> tmp = new ArrayList<>(results.size());
+        List<SingleResult<Integer>> tmp = new ArrayList<>(results.size());
         tmp.addAll(results);
         this.results = Collections.unmodifiableList(tmp);
     }
     
-    private void addIncrements(int value, Integer ... dice)
+    private void addIncrements(int value, SingleResult<Integer> ... dice)
     {
         this.addIncrements(value, Arrays.asList(dice));
     }
     
-    public void addIncrement(Integer ... dice)
+    public void addIncrement(SingleResult<Integer> ... dice)
     {
         addIncrements(1, dice);
     }
     
-    public void addDoubleIncrement(Integer ... dice)
+    public void addDoubleIncrement(SingleResult<Integer> ... dice)
     {
         addIncrements(2, dice);
     }
-    private void addIncrements(int value, Collection<Integer> dice)
+    private void addIncrements(int value, Collection<SingleResult<Integer>> dice)
     {
         increments += value;
         StringBuilder sb = new StringBuilder("(");
-        for (Integer d : dice)
+        for (SingleResult<Integer> d : dice)
         {
             if (sb.length() >= 2)
             {
@@ -74,12 +75,12 @@ public class S7thSea2Results extends GenericResult
         usedDice.add(sb.toString());
     }
     
-    public void addIncrement(Collection<Integer> dice)
+    public void addIncrement(Collection<SingleResult<Integer>> dice)
     {
         addIncrements(1, dice);
     }
     
-    public void addDoubleIncrement(Collection<Integer> dice)
+    public void addDoubleIncrement(Collection<SingleResult<Integer>> dice)
     {
         addIncrements(2, dice);
     }
@@ -94,32 +95,32 @@ public class S7thSea2Results extends GenericResult
         return usedDice;
     }
 
-    public List<Integer> getLeftovers()
+    public List<SingleResult<Integer>> getLeftovers()
     {
         return leftovers;
     }
 
-    public List<Integer> getResults()
+    public List<SingleResult<Integer>> getResults()
     {
         return results;
     }
 
-    public List<Integer> getNewValue()
+    public List<SingleResult<Integer>> getNewValue()
     {
         return newValue;
     }
 
-    public void setNewValue(List<Integer> newValue)
+    public void setNewValue(List<SingleResult<Integer>> newValue)
     {
         this.newValue = newValue;
     }
 
-    public Integer getOldValue()
+    public SingleResult<Integer> getOldValue()
     {
         return oldValue;
     }
 
-    public void setOldValue(Integer oldValue)
+    public void setOldValue(SingleResult<Integer> oldValue)
     {
         this.oldValue = oldValue;
     }
@@ -141,7 +142,7 @@ public class S7thSea2Results extends GenericResult
         messageBuilder.append(indent).append("Raises: ").append(getIncrements()).append(" ");
         messageBuilder.append(getUsedDice()).appendNewLine();
         messageBuilder.append(indent).append("Unused dice: ").append(getLeftovers().size()).append(" [ ");
-        for (Integer t : getLeftovers())
+        for (SingleResult<Integer> t : getLeftovers())
         {
             messageBuilder.append(t).append(" ");
         }
@@ -150,7 +151,7 @@ public class S7thSea2Results extends GenericResult
         {
             messageBuilder.append(indent).append("Roll ID: ").append(getUuid()).appendNewLine();
             messageBuilder.append(indent).append("Results: ").append(" [ ");
-            for (Integer t : getResults())
+            for (SingleResult<Integer> t : getResults())
             {
                 messageBuilder.append(t).append(" ");
             }

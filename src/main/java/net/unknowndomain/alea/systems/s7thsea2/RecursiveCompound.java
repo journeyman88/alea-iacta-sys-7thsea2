@@ -17,6 +17,7 @@ package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.unknowndomain.alea.random.SingleResult;
 
 /**
  *
@@ -24,9 +25,9 @@ import java.util.List;
  */
 public class RecursiveCompound
 {
-    private static void sumUpRecursive(List<D10Values> numbers, int target, List<D10Values> partial, List<Group> groups) {
+    private static void sumUpRecursive(List<SingleResult<Integer>> numbers, int target, List<SingleResult<Integer>> partial, List<Group> groups) {
         int s = 0;
-        for (D10Values x: partial)
+        for (SingleResult<Integer> x: partial)
         {
             s += x.getValue();
         }
@@ -37,16 +38,16 @@ public class RecursiveCompound
         }
         for(int i=0;i<numbers.size();i++)
         {
-            List<D10Values> remaining = new ArrayList<>();
-            D10Values n = numbers.get(i);
+            List<SingleResult<Integer>> remaining = new ArrayList<>();
+            SingleResult<Integer> n = numbers.get(i);
             for (int j=i+1; j<numbers.size();j++) remaining.add(numbers.get(j));
-            List<D10Values> partial_rec = new ArrayList<>(partial);
+            List<SingleResult<Integer>> partial_rec = new ArrayList<>(partial);
             partial_rec.add(n);
             sumUpRecursive(remaining,target,partial_rec, groups);
         }
     }
     
-    private static List<Group> sumUp(List<D10Values> list, int target) 
+    private static List<Group> sumUp(List<SingleResult<Integer>> list, int target) 
     {
         List<Group> retVal = new ArrayList<>();
         while(true)
@@ -69,7 +70,7 @@ public class RecursiveCompound
                     chosen = g;
                 }
             }
-            for (D10Values v : chosen.getValues())
+            for (SingleResult<Integer> v : chosen.getValues())
             {
                 list.remove(v);
             }
@@ -80,28 +81,24 @@ public class RecursiveCompound
     
     public static void calcIncrements(S7thSea2Results results, boolean doubleIncrements, int diffMod)
     {
-        List<D10Values> list = new ArrayList<>();
-        for (Integer i : results.getResults())
-        {
-            list.add(D10Values.find(i));
-        }
+        List<SingleResult<Integer>> list = results.getResults();
         List<Group> tmp;
         if (doubleIncrements)
         {
             tmp = sumUp(list, 15 + diffMod);
             for (Group g : tmp)
             {
-                results.addDoubleIncrement(g.getDices());
+                results.addDoubleIncrement(g.getValues());
             }
         }
         tmp = sumUp(list, 10 + diffMod);
         for (Group g : tmp)
         {
-            results.addIncrement(g.getDices());
+            results.addIncrement(g.getValues());
         }
-        for (D10Values l : list)
+        for (SingleResult<Integer> l : list)
         {
-            results.getLeftovers().add(l.getValue());
+            results.getLeftovers().add(l);
         }
     }
     

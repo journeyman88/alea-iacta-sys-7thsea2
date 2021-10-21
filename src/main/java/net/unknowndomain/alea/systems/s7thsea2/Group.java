@@ -17,6 +17,7 @@ package net.unknowndomain.alea.systems.s7thsea2;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.unknowndomain.alea.random.SingleResult;
 
 /**
  *
@@ -25,9 +26,9 @@ import java.util.List;
 
 public class Group
 {
-    private final List<D10Values> values;
+    private final List<SingleResult<Integer>> values;
 
-    public Group(List<D10Values> values)
+    public Group(List<SingleResult<Integer>> values)
     {
         this.values = values;
     }
@@ -35,7 +36,7 @@ public class Group
     public int getTotal()
     {
         int sum = 0;
-        for (D10Values v : values)
+        for (SingleResult<Integer> v : values)
         {
             sum += v.getValue();
         }
@@ -47,19 +48,9 @@ public class Group
         return values.size();
     }
 
-    public List<D10Values> getValues()
+    public List<SingleResult<Integer>> getValues()
     {
         return values;
     }
 
-    public List<Integer> getDices()
-    {
-        List<Integer> retVal = new ArrayList<>(values.size());
-        for (D10Values d : values)
-        {
-            retVal.add(d.getValue());
-        }
-        return retVal;
-    }
-    
 }

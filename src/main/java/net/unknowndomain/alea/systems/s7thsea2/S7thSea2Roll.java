@@ -22,8 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import net.unknowndomain.alea.dice.standard.D10;
-import net.unknowndomain.alea.pools.DicePool;
+import net.unknowndomain.alea.random.SingleResult;
+import net.unknowndomain.alea.random.dice.DicePool;
+import net.unknowndomain.alea.random.dice.bag.D10;
 import net.unknowndomain.alea.roll.GenericResult;
 import net.unknowndomain.alea.roll.GenericRoll;
 
@@ -116,14 +117,14 @@ public class S7thSea2Roll implements GenericRoll
     @Override
     public GenericResult getResult()
     {
-        List<Integer> resultsPool = this.dicePool.getResults();
-        List<Integer> res = new ArrayList<>();
+        List<SingleResult<Integer>> resultsPool = this.dicePool.getResults();
+        List<SingleResult<Integer>> res = new ArrayList<>();
         res.addAll(resultsPool);
         S7thSea2Results results = buildIncrements(res);
         S7thSea2Results results2 = null;
         if ((!results.getLeftovers().isEmpty()) && mods.contains(S7thSea2Modifiers.REROLL_LEFTOVER))
         {
-            Integer ret = res.remove(res.size()-1);
+            SingleResult<Integer> ret = res.remove(res.size()-1);
             res = new ArrayList<>();
             DicePool<D10> reroll;
             if (mods.contains(S7thSea2Modifiers.EXPLODING_DICE))
@@ -135,8 +136,8 @@ public class S7thSea2Roll implements GenericRoll
                 reroll = new DicePool<>(D10.INSTANCE, 1);
             }
             boolean done = false;
-            List<Integer> newRes = reroll.getResults();
-            for (Integer tmp : resultsPool)
+            List<SingleResult<Integer>> newRes = reroll.getResults();
+            for (SingleResult<Integer> tmp : resultsPool)
             {
                 if ((!done) && (Objects.equals(tmp, ret)))
                 {
@@ -158,19 +159,19 @@ public class S7thSea2Roll implements GenericRoll
         return results;
     }
     
-    private S7thSea2Results buildIncrements(List<Integer> res)
+    private S7thSea2Results buildIncrements(List<SingleResult<Integer>> res)
     {
         
         if (mods.contains(S7thSea2Modifiers.JOIE_DE_VIVRE))
         {
-            List<Integer> tmp = new ArrayList<>(res.size());
+            List<SingleResult<Integer>> tmp = new ArrayList<>(res.size());
             tmp.addAll(res);
             res.clear();
-            for (Integer r : tmp)
+            for (SingleResult<Integer> r : tmp)
             {
-                if (r <= skill)
+                if (r.getValue() <= skill)
                 {
-                    res.add(10);
+                    res.add(new SingleResult<>(r.getLabel(), 10));
                 }
                 else
                 {
@@ -180,17 +181,17 @@ public class S7thSea2Roll implements GenericRoll
         }
         if (addValue > 0)
         {
-            List<Integer> tmp = new ArrayList<>(res.size());
+            List<SingleResult<Integer>> tmp = new ArrayList<>(res.size());
             tmp.addAll(res);
             res.clear();
-            for (Integer r : tmp)
+            for (SingleResult<Integer> r : tmp)
             {
-                res.add(r + addValue);
+                res.add(new SingleResult<>(r.getLabel() + "+" + addValue, r.getValue() + addValue));
             }
         }
-        res.sort((Integer o1, Integer o2) ->
+        res.sort((SingleResult<Integer> o1, SingleResult<Integer> o2) ->
         {
-            return -1 * o1.compareTo(o2);
+            return -1 * o1.getValue().compareTo(o2.getValue());
         });
         S7thSea2Results results = new S7thSea2Results(res);
         int diffMod = (mods.contains(S7thSea2Modifiers.INCREASED_DIFFICULTY)) ? 5 : 0;
