@@ -34,7 +34,7 @@ public class S7thSea2Results extends GenericResult
     private final List<SingleResult<Integer>> results;
     private int increments = 0;
     private List<SingleResult<Integer>> leftovers = new LinkedList<>();
-    private List<String> usedDice = new LinkedList<>();
+    private List<Raise> usedDice = new LinkedList<>();
     private SingleResult<Integer> oldValue;
     private List<SingleResult<Integer>> newValue;
     private S7thSea2Results prev;
@@ -63,17 +63,7 @@ public class S7thSea2Results extends GenericResult
     private void addIncrements(int value, Collection<SingleResult<Integer>> dice)
     {
         increments += value;
-        StringBuilder sb = new StringBuilder("(");
-        for (SingleResult<Integer> d : dice)
-        {
-            if (sb.length() >= 2)
-            {
-                sb.append("+");
-            }
-            sb.append(d.getValue());
-        }
-        sb.append(")");
-        usedDice.add(sb.toString());
+        usedDice.add(new Raise(dice));
     }
     
     public void addIncrement(Collection<SingleResult<Integer>> dice)
@@ -91,7 +81,7 @@ public class S7thSea2Results extends GenericResult
         return increments;
     }
 
-    public List<String> getUsedDice()
+    public List<Raise> getUsedDice()
     {
         return usedDice;
     }
@@ -106,7 +96,7 @@ public class S7thSea2Results extends GenericResult
         return results;
     }
 
-    public List<SingleResult<Integer>> getNewValue()
+    public List<SingleResult<Integer>> accessNewValue()
     {
         return newValue;
     }
@@ -116,7 +106,7 @@ public class S7thSea2Results extends GenericResult
         this.newValue = newValue;
     }
 
-    public SingleResult<Integer> getOldValue()
+    public SingleResult<Integer> accessOldValue()
     {
         return oldValue;
     }
@@ -126,7 +116,7 @@ public class S7thSea2Results extends GenericResult
         this.oldValue = oldValue;
     }
 
-    public S7thSea2Results getPrev()
+    public S7thSea2Results accessPrev()
     {
         return prev;
     }
@@ -141,7 +131,11 @@ public class S7thSea2Results extends GenericResult
     {
         String indent = getIndent(indentValue);
         messageBuilder.append(indent).append("Raises: ").append(getIncrements()).append(" ");
-        messageBuilder.append(getUsedDice()).appendNewLine();
+        for (Raise inc : getUsedDice())
+        {
+            messageBuilder.append(inc.format()).append(" ");
+        }
+        messageBuilder.appendNewLine();
         messageBuilder.append(indent).append("Unused dice: ").append(getLeftovers().size()).append(" [ ");
         for (SingleResult<Integer> t : getLeftovers())
         {
@@ -162,16 +156,16 @@ public class S7thSea2Results extends GenericResult
         if (prev != null)
         {
             
-            messageBuilder.append("Reroll: true (").append(getOldValue().getValue()).append(" => ");
-            if (getNewValue().size() > 1)
+            messageBuilder.append("Reroll: true (").append(accessOldValue().getValue()).append(" => ");
+            if (accessNewValue().size() > 1)
             {
                 messageBuilder.append("[ ");
             }
-            for (SingleResult<Integer> t : getNewValue())
+            for (SingleResult<Integer> t : accessNewValue())
             {
                 messageBuilder.append(t.getValue()).append(" ");
             }
-            if (getNewValue().size() > 1)
+            if (accessNewValue().size() > 1)
             {
                 messageBuilder.append("] ");
             }

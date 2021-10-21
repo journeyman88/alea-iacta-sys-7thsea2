@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.unknowndomain.alea.systems.s7thsea2;
+package net.unknowndomain.alea.systems.s7thsea2.compound;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,6 +15,7 @@
  */
 package net.unknowndomain.alea.systems.s7thsea2;
 
+import net.unknowndomain.alea.systems.s7thsea2.compound.RecursiveCompound;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
