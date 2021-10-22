@@ -17,18 +17,18 @@ import net.unknowndomain.alea.systems.annotations.RpgSystemOption;
  *
  * @author journeyman
  */
-@RpgSystemData(bundleName = "net.unknowndomain.alea.systems.s7thsea2.RpgSystemBundle")
+@RpgSystemData(bundleName = "net.unknowndomain.alea.systems.s7thsea2.RpgSystemBundle", groupsName = {"character","simple"}, groupsDesc = {"Character Mode", "Simple Mode"})
 public class S7thSea2Options extends RpgSystemOptions
 {
-    @RpgSystemOption(name = "trait", shortcode = "t", description = "7thsea.options.trait", argName = "traitValue")
+    @RpgSystemOption(name = "trait", shortcode = "t", description = "7thsea.options.trait", argName = "traitValue", groupName = "character", groupRequired = true)
     private Integer trait;
-    @RpgSystemOption(name = "skill", shortcode = "s", description = "7thsea.options.skill", argName = "skillRank")
+    @RpgSystemOption(name = "skill", shortcode = "s", description = "7thsea.options.skill", argName = "skillRank", groupName = "character", groupRequired = true)
     private Integer skill;
-    @RpgSystemOption(name = "bonus", shortcode = "b", description = "7thsea.options.bonus", argName = "bonusDice")
+    @RpgSystemOption(name = "bonus", shortcode = "b", description = "7thsea.options.bonus", argName = "bonusDice", groupName = "character")
     private Integer bonus;
-    @RpgSystemOption(name = "joie", shortcode = "j", description = "7thsea.options.joie")
+    @RpgSystemOption(name = "joie", shortcode = "j", description = "7thsea.options.joie", groupName = "character")
     private boolean joie;
-    @RpgSystemOption(name = "number", shortcode = "n", description = "7thsea.options.number", argName = "diceNumber")
+    @RpgSystemOption(name = "number", shortcode = "n", description = "7thsea.options.number", argName = "diceNumber", groupName = "simple", groupRequired = true)
     private Integer number;
     @RpgSystemOption(name = "reroll", shortcode = "r", description = "7thsea.options.reroll")
     private boolean reroll;
