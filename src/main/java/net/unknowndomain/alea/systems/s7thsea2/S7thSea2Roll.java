@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import net.unknowndomain.alea.random.SingleResult;
+import net.unknowndomain.alea.random.SingleResultComparator;
 import net.unknowndomain.alea.random.dice.DicePool;
 import net.unknowndomain.alea.random.dice.bag.D10;
 import net.unknowndomain.alea.roll.GenericResult;
@@ -190,10 +191,8 @@ public class S7thSea2Roll implements GenericRoll
                 res.add(new SingleResult<>(r.getLabel() + "+" + addValue, r.getValue() + addValue));
             }
         }
-        res.sort((SingleResult<Integer> o1, SingleResult<Integer> o2) ->
-        {
-            return -1 * o1.getValue().compareTo(o2.getValue());
-        });
+        SingleResultComparator<Integer> comp = new SingleResultComparator(true);
+        res.sort(comp);
         S7thSea2Results results = new S7thSea2Results(res);
         int diffMod = (mods.contains(S7thSea2Modifiers.INCREASED_DIFFICULTY)) ? 5 : 0;
         RecursiveCompound.calcIncrements(results, mods.contains(S7thSea2Modifiers.DOUBLE_INCREMENT), diffMod);
