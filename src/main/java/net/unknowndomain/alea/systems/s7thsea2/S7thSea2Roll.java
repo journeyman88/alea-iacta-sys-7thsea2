@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.unknowndomain.alea.random.SingleResult;
@@ -41,18 +42,19 @@ public class S7thSea2Roll implements GenericRoll
     private final Set<S7thSea2Modifiers> mods;
     private final int skill;
     private final int addValue;
+    private final Locale lang;
     
-    public S7thSea2Roll(Integer dice, Integer add, S7thSea2Modifiers ... mod)
+    public S7thSea2Roll(Integer dice, Integer add, Locale lang, S7thSea2Modifiers ... mod)
     {
-        this(dice, add, Arrays.asList(mod));
+        this(dice, add, lang, Arrays.asList(mod));
     }
     
-    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, S7thSea2Modifiers ... mod)
+    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, Locale lang, S7thSea2Modifiers ... mod)
     {
-        this(trait, skill, bonus, add, Arrays.asList(mod));
+        this(trait, skill, bonus, add, lang, Arrays.asList(mod));
     }
     
-    public S7thSea2Roll(Integer dice, Integer add, Collection<S7thSea2Modifiers> mod)
+    public S7thSea2Roll(Integer dice, Integer add, Locale lang, Collection<S7thSea2Modifiers> mod)
     {
         this.mods = new HashSet<>();
         if (mod != null)
@@ -69,9 +71,10 @@ public class S7thSea2Roll implements GenericRoll
         }
         skill = 0;
         this.addValue = (add == null) ? (0) : (add);
+        this.lang = lang;
     }
     
-    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, Collection<S7thSea2Modifiers> mod)
+    public S7thSea2Roll(Integer trait, Integer skill, Integer bonus, Integer add, Locale lang, Collection<S7thSea2Modifiers> mod)
     {
         this.mods = new HashSet<>();
         if (mod != null)
@@ -114,6 +117,7 @@ public class S7thSea2Roll implements GenericRoll
         }
         this.skill = skill;
         this.addValue = (add == null) ? (0) : (add);
+        this.lang = lang;
     }
     
     @Override
@@ -158,6 +162,7 @@ public class S7thSea2Roll implements GenericRoll
             results.setPrev(results2);
         }
         results.setVerbose(mods.contains(S7thSea2Modifiers.VERBOSE));
+        results.setLang(lang);
         return results;
     }
     

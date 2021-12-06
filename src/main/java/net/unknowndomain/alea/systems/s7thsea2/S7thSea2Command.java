@@ -65,11 +65,11 @@ public class S7thSea2Command extends RpgSystemCommand
             S7thSea2Roll roll;
             if (opt.isCharacterMode())
             {
-                roll = new S7thSea2Roll(opt.getTrait(), opt.getSkill(), opt.getBonus(), opt.getAddValue(), opt.getModifiers());
+                roll = new S7thSea2Roll(opt.getTrait(), opt.getSkill(), opt.getBonus(), opt.getAddValue(), lang, opt.getModifiers());
             }
             else
             {
-                roll = new S7thSea2Roll(opt.getNumber(), opt.getAddValue(), opt.getModifiers());
+                roll = new S7thSea2Roll(opt.getNumber(), opt.getAddValue(), lang, opt.getModifiers());
             }
             retVal = Optional.of(roll);
         }
