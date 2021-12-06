@@ -21,18 +21,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import net.unknowndomain.alea.messages.MsgBuilder;
 import net.unknowndomain.alea.random.SingleResult;
-import net.unknowndomain.alea.roll.GenericResult;
+import net.unknowndomain.alea.roll.LocalizedResult;
 
 /**
  *
  * @author journeyman
  */
-public class S7thSea2Results extends GenericResult
+public class S7thSea2Results extends LocalizedResult
 {
+    private final static String BUNDLE_NAME = "net.unknowndomain.alea.systems.s7thsea2.RpgSystemBundle";
+    
     private final List<SingleResult<Integer>> results;
     private int increments = 0;
     private List<SingleResult<Integer>> leftovers = new LinkedList<>();
@@ -40,7 +40,6 @@ public class S7thSea2Results extends GenericResult
     private SingleResult<Integer> oldValue;
     private List<SingleResult<Integer>> newValue;
     private S7thSea2Results prev;
-    private Locale lang;
     
     public S7thSea2Results(List<SingleResult<Integer>> results)
     {
@@ -132,15 +131,14 @@ public class S7thSea2Results extends GenericResult
     @Override
     protected void formatResults(MsgBuilder messageBuilder, boolean verbose, int indentValue)
     {
-        ResourceBundle i18n = ResourceBundle.getBundle("net.unknowndomain.alea.systems.s7thsea2.RpgSystemBundle", lang);
         String indent = getIndent(indentValue);
-        messageBuilder.append(indent).append(String.format(i18n.getString("7thsea.results.raises"), getIncrements())).append(" ");
+        messageBuilder.append(indent).append(translate("7thsea.results.raises", getIncrements())).append(" ");
         for (Raise inc : getUsedDice())
         {
             messageBuilder.append(inc.format()).append(" ");
         }
         messageBuilder.appendNewLine();
-        messageBuilder.append(indent).append(String.format(i18n.getString("7thsea.results.unusedDice"), getLeftovers().size())).append(" [ ");
+        messageBuilder.append(indent).append(translate("7thsea.results.unusedDice", getLeftovers().size())).append(" [ ");
         for (SingleResult<Integer> t : getLeftovers())
         {
             messageBuilder.append(t.getValue()).append(" ");
@@ -149,7 +147,7 @@ public class S7thSea2Results extends GenericResult
         if (verbose)
         {
             messageBuilder.append(indent).append("Roll ID: ").append(getUuid()).appendNewLine();
-            messageBuilder.append(indent).append(i18n.getString("7thsea.results.diceResults")).append(" [ ");
+            messageBuilder.append(indent).append(translate("7thsea.results.diceResults")).append(" [ ");
             for (SingleResult<Integer> t : getResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
@@ -160,7 +158,7 @@ public class S7thSea2Results extends GenericResult
         if (prev != null)
         {
             
-            messageBuilder.append(String.format(i18n.getString("7thsea.results.reroll"), prev));
+            messageBuilder.append(translate("7thsea.results.reroll", prev));
             messageBuilder.append(" (").append(accessOldValue().getValue()).append(" => ");
             if (accessNewValue().size() > 1)
             {
@@ -177,21 +175,17 @@ public class S7thSea2Results extends GenericResult
             messageBuilder.append(")").appendNewLine();
             if (verbose)
             {
-                messageBuilder.append(i18n.getString("7thsea.results.prevResults")).append("{\n");
+                messageBuilder.append(translate("7thsea.results.prevResults")).append("{\n");
                 prev.formatResults(messageBuilder, verbose, indentValue + 4);
                 messageBuilder.append("}\n");
             }
         }
     }
 
-    public Locale getLang()
+    @Override
+    protected String getBundleName()
     {
-        return lang;
+        return BUNDLE_NAME;
     }
-
-    public void setLang(Locale lang)
-    {
-        this.lang = lang;
-    }
-
+    
 }
